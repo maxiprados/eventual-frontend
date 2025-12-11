@@ -1,0 +1,3 @@
+# Empty robots.txt
+User-agent: *
+Allow: /
