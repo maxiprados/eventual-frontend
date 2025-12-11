@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Search, MapPin, Calendar, Filter } from 'lucide-react';
 import EventCard from '../components/EventCard';
 import EventMap from '../components/EventMap';
@@ -7,6 +8,7 @@ import Alert from '../components/Alert';
 import { eventService } from '../services/api';
 
 const HomePage = () => {
+  const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -267,7 +269,7 @@ const HomePage = () => {
               <EventMap
                 center={mapCenter}
                 events={filteredEvents}
-                onEventClick={(event) => window.open(`/event/${event.id || event._id}`, '_blank')}
+                onEventClick={(event) => navigate(`/event/${event.id || event._id}`)}
                 className="h-96 rounded-xl"
               />
             </div>
