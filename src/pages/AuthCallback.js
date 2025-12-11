@@ -14,25 +14,37 @@ const AuthCallback = () => {
     const handleAuthCallback = async () => {
       try {
         console.log('🔄 Auth callback processing...', window.location.href);
+        console.log('🔍 Search params:', Object.fromEntries(searchParams));
         
         const token = searchParams.get('token');
         const userParam = searchParams.get('user');
         
-        console.log('Token:', token ? 'present' : 'missing');
+        console.log('Token:', token ? `present (${token.substring(0, 20)}...)` : 'missing');
         console.log('User param:', userParam ? 'present' : 'missing');
         
         if (token && userParam) {
+          console.log('📝 Raw user param:', userParam);
           const user = JSON.parse(decodeURIComponent(userParam));
           console.log('✅ Parsed user:', user);
-          await login(token, user);
-          navigate('/', { replace: true });
+          
+          console.log('🔑 Attempting login...');
+          const result = await login(token, user);
+          console.log('📊 Login result:', result);
+          
+          if (result?.success !== false) {
+            console.log('✅ Login successful, navigating to home...');
+            navigate('/', { replace: true });
+          } else {
+            console.log('❌ Login failed');
+            setError(result?.error || 'Error en el login');
+          }
         } else {
           console.log('❌ Missing auth data');
           setError('Datos de autenticación faltantes. Inténtalo de nuevo.');
         }
       } catch (error) {
         console.error('❌ Error in auth callback:', error);
-        setError('Error procesando autenticación. Inténtalo de nuevo.');
+        setError(`Error procesando autenticación: ${error.message}`);
       }
     };
 
