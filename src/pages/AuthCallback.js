@@ -13,19 +13,26 @@ const AuthCallback = () => {
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
+        console.log('🔄 Auth callback processing...', window.location.href);
+        
         const token = searchParams.get('token');
         const userParam = searchParams.get('user');
         
+        console.log('Token:', token ? 'present' : 'missing');
+        console.log('User param:', userParam ? 'present' : 'missing');
+        
         if (token && userParam) {
           const user = JSON.parse(decodeURIComponent(userParam));
+          console.log('✅ Parsed user:', user);
           await login(token, user);
           navigate('/', { replace: true });
         } else {
-          setError('Datos de autenticación faltantes');
+          console.log('❌ Missing auth data');
+          setError('Datos de autenticación faltantes. Inténtalo de nuevo.');
         }
       } catch (error) {
-        console.error('Error in auth callback:', error);
-        setError('Error procesando autenticación');
+        console.error('❌ Error in auth callback:', error);
+        setError('Error procesando autenticación. Inténtalo de nuevo.');
       }
     };
 
