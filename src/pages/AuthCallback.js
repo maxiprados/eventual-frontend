@@ -5,67 +5,62 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import Alert from '../components/Alert';
 
 const AuthCallback = () => {
+  console.log('🚀 AuthCallback component loaded');
+  
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { login } = useAuth();
   const [error, setError] = React.useState(null);
   const [isProcessing, setIsProcessing] = React.useState(true);
+  
+  console.log('📍 Component state:', { error, isProcessing });
 
   useEffect(() => {
-    const handleAuthCallback = async () => {
+    console.log('🔄 useEffect started');
+    
+    // Función simplificada
+    const processAuth = async () => {
       try {
-        console.log('🔄 Auth callback processing...', window.location.href);
-        console.log('🔍 Search params:', Object.fromEntries(searchParams));
+        console.log('🔍 Current URL:', window.location.href);
         
         const token = searchParams.get('token');
         const userParam = searchParams.get('user');
         
-        console.log('Token:', token ? `present (${token.substring(0, 20)}...)` : 'missing');
-        console.log('User param:', userParam ? 'present' : 'missing');
+        console.log('📊 Extracted params:', { 
+          hasToken: !!token, 
+          hasUser: !!userParam,
+          tokenPreview: token ? token.substring(0, 30) + '...' : 'none'
+        });
         
-        if (token && userParam) {
-          console.log('📝 Raw user param:', userParam);
-          const user = JSON.parse(decodeURIComponent(userParam));
-          console.log('✅ Parsed user:', user);
-          
-          console.log('🔑 Attempting login...');
-          const result = await login(token, user);
-          console.log('📊 Login result:', result);
-          
-          if (result?.success !== false) {
-            console.log('✅ Login successful, navigating to home...');
-            setIsProcessing(false);
-            navigate('/', { replace: true });
-          } else {
-            console.log('❌ Login failed');
-            setIsProcessing(false);
-            setError(result?.error || 'Error en el login');
-          }
-        } else {
-          console.log('❌ Missing auth data');
+        if (!token || !userParam) {
+          console.log('❌ Missing required params');
+          setError('Datos de autenticación faltantes');
           setIsProcessing(false);
-          setError('Datos de autenticación faltantes. Inténtalo de nuevo.');
+          return;
         }
+        
+        // Parse user data
+        console.log('🔍 Raw user param:', userParam.substring(0, 100) + '...');
+        const user = JSON.parse(decodeURIComponent(userParam));
+        console.log('✅ Parsed user:', user);
+        
+        // Attempt login
+        console.log('🔑 Starting login process...');
+        await login(token, user);
+        console.log('✅ Login completed, redirecting...');
+        
+        // Navigate to home
+        navigate('/', { replace: true });
+        
       } catch (error) {
-        console.error('❌ Error in auth callback:', error);
+        console.error('💥 Auth error:', error);
+        setError(`Error: ${error.message}`);
         setIsProcessing(false);
-        setError(`Error procesando autenticación: ${error.message}`);
       }
     };
-
-    // Timeout de seguridad - si no procesa en 10 segundos, mostrar error
-    const timeout = setTimeout(() => {
-      if (isProcessing) {
-        console.log('⏰ Auth callback timeout');
-        setIsProcessing(false);
-        setError('Tiempo de espera agotado procesando autenticación');
-      }
-    }, 10000);
-
-    handleAuthCallback();
-
-    return () => clearTimeout(timeout);
-  }, [searchParams, login, navigate, isProcessing]);
+    
+    processAuth();
+  }, []);
 
   if (error) {
     return (
