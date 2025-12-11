@@ -5,7 +5,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 // URL base de la API
 const API_BASE_URL = isProduction 
-  ? process.env.REACT_APP_API_URL || 'https://eventual-backend.onrender.com/api'  // En producción, usar backend en Render
+  ? process.env.REACT_APP_API_URL || 'https://eventual-backend-r8yc.onrender.com/api'  // En producción, usar backend en Render
   : process.env.REACT_APP_API_URL || 'http://localhost:5000/api'; // En desarrollo, usar localhost
 
 console.log('🌍 Entorno:', process.env.NODE_ENV);
