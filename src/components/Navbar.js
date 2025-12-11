@@ -23,7 +23,7 @@ const Navbar = () => {
   };
 
   const handleLogin = () => {
-    window.location.href = 'http://localhost:5000/api/auth/google';
+    window.location.href = 'https://eventual-backend-r8yc.onrender.com/api/auth/google';
   };
 
   const toggleMenu = () => {
