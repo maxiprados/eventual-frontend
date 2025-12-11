@@ -41,8 +41,8 @@ const MyEventsPage = () => {
       setLoading(true);
       setError(null);
       const response = await eventService.getMyEvents();
-      console.log('Mis eventos response:', response.data); // Debug
-      setEvents(response.data.events || []);
+      console.log('Mis eventos response:', response); // Debug
+      setEvents(response.events || []);
     } catch (error) {
       console.error('Error loading my events:', error);
       setError('Error cargando tus eventos. Inténtalo de nuevo.');

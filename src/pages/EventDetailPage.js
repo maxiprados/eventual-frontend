@@ -24,8 +24,8 @@ const EventDetailPage = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await eventService.getEvent(id);
-      setEvent(response.data);
+      const response = await eventService.getEventById(id);
+      setEvent(response);
     } catch (error) {
       console.error('Error loading event:', error);
       setError('Error cargando el evento. Puede que no exista o haya sido eliminado.');

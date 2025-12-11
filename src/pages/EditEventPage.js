@@ -43,8 +43,8 @@ const EditEventPage = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await eventService.getEvent(id);
-      const event = response.data;
+      const response = await eventService.getEventById(id);
+      const event = response;
       
       // Verificar que el usuario es el organizador
       if (event.organizador !== user?.email) {
