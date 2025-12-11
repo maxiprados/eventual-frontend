@@ -9,6 +9,7 @@ const AuthCallback = () => {
   const [searchParams] = useSearchParams();
   const { login } = useAuth();
   const [error, setError] = React.useState(null);
+  const [isProcessing, setIsProcessing] = React.useState(true);
 
   useEffect(() => {
     const handleAuthCallback = async () => {
@@ -33,23 +34,38 @@ const AuthCallback = () => {
           
           if (result?.success !== false) {
             console.log('✅ Login successful, navigating to home...');
+            setIsProcessing(false);
             navigate('/', { replace: true });
           } else {
             console.log('❌ Login failed');
+            setIsProcessing(false);
             setError(result?.error || 'Error en el login');
           }
         } else {
           console.log('❌ Missing auth data');
+          setIsProcessing(false);
           setError('Datos de autenticación faltantes. Inténtalo de nuevo.');
         }
       } catch (error) {
         console.error('❌ Error in auth callback:', error);
+        setIsProcessing(false);
         setError(`Error procesando autenticación: ${error.message}`);
       }
     };
 
+    // Timeout de seguridad - si no procesa en 10 segundos, mostrar error
+    const timeout = setTimeout(() => {
+      if (isProcessing) {
+        console.log('⏰ Auth callback timeout');
+        setIsProcessing(false);
+        setError('Tiempo de espera agotado procesando autenticación');
+      }
+    }, 10000);
+
     handleAuthCallback();
-  }, [searchParams, login, navigate]);
+
+    return () => clearTimeout(timeout);
+  }, [searchParams, login, navigate, isProcessing]);
 
   if (error) {
     return (
@@ -71,9 +87,23 @@ const AuthCallback = () => {
     );
   }
 
+  if (isProcessing) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <LoadingSpinner size="large" text="Completando autenticación..." />
+          <p className="text-gray-600 mt-4">Procesando datos de Google OAuth...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Este estado no debería alcanzarse, pero por seguridad
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <LoadingSpinner size="large" text="Completando autenticación..." />
+      <div className="text-center">
+        <p className="text-gray-600">Redirigiendo...</p>
+      </div>
     </div>
   );
 };
