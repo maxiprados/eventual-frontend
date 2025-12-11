@@ -13,6 +13,7 @@ Frontend de la aplicación Eventual - Gestión de eventos.
 
 ## ✅ Build Status
 Build verificado funcionando correctamente - Dec 11, 2025
+Estructura simplificada para Vercel - Fixed index.html detection
 
 ## 🔧 Variables de entorno
 
