@@ -36,7 +36,7 @@ const HomePage = () => {
       setLoading(true);
       setError(null);
       const response = await eventService.getEvents();
-      setEvents(response.data.events || []);
+      setEvents(response.events || []);
     } catch (error) {
       console.error('Error loading events:', error);
       setError('Error cargando eventos. Inténtalo de nuevo.');
@@ -57,16 +57,16 @@ const HomePage = () => {
       setError(null);
       
       // Primero obtener coordenadas de la dirección
-      const geocodeResponse = await eventService.geocode(searchAddress);
-      const { lat, lon } = geocodeResponse.data;
+      const geocodeResponse = await eventService.geocodeAddress(searchAddress);
+      const { lat, lon } = geocodeResponse;
       
       setMapCenter([lat, lon]);
       
       // Buscar eventos cerca de esas coordenadas
       const eventsResponse = await eventService.getEvents({ lat, lon });
-      setEvents(eventsResponse.data.events || []);
+      setEvents(eventsResponse.events || []);
       
-      if (eventsResponse.data.events.length === 0) {
+      if (eventsResponse.events.length === 0) {
         setError('No se encontraron eventos cercanos a esa ubicación.');
       }
     } catch (error) {
